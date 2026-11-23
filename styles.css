@@ -98,11 +98,13 @@ button:disabled {
   cursor: not-allowed;
 }
 
+#btn-instalar,
 #btn-confirmar-ubicacion,
 #btn-enviar {
   background: #4ade80;
 }
 
+#btn-instalar:hover:not(:disabled),
 #btn-confirmar-ubicacion:hover:not(:disabled),
 #btn-enviar:hover:not(:disabled) {
   background: #86efac;

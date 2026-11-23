@@ -1,7 +1,7 @@
 'use strict';
 
 // Subir la versión en cada cambio publicado para forzar la actualización
-const NOMBRE_CACHE = 'pwa-geo-modular-v1';
+const NOMBRE_CACHE = 'pwa-geo-modular-v2';
 
 // App Shell con rutas relativas (GitHub Pages publica en un subdirectorio).
 // geo-helper.js va incluido para que el módulo esté disponible sin red.

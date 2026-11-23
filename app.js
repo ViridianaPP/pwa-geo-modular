@@ -12,6 +12,7 @@
 const UMBRAL_PRECISION_ALTA = 30; // metros
 
 let ubicacionActual = null;
+let eventoInstalacionDiferido = null;
 
 // -----------------------------
 // Utilidades de interfaz
@@ -182,9 +183,57 @@ function prepararReporte(evento) {
 }
 
 // -----------------------------
+// Instalación (Android/Chrome) y guía para iPhone
+// -----------------------------
+function verificarEntornoIOS() {
+  const esIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+  const estaInstalada = window.navigator.standalone === true ||
+    window.matchMedia('(display-mode: standalone)').matches;
+
+  if (esIOS && !estaInstalada) {
+    document.getElementById('instrucciones-ios').hidden = false;
+  }
+}
+
+// Se registra al cargar el script: Chrome puede disparar el evento muy pronto
+window.addEventListener('beforeinstallprompt', (event) => {
+  event.preventDefault(); // Evita el mini-banner automático
+  eventoInstalacionDiferido = event;
+  document.getElementById('tarjeta-instalar').hidden = false;
+});
+
+window.addEventListener('appinstalled', () => {
+  eventoInstalacionDiferido = null;
+  document.getElementById('tarjeta-instalar').hidden = true;
+});
+
+function instalarApp() {
+  if (!eventoInstalacionDiferido) {
+    return;
+  }
+
+  eventoInstalacionDiferido.prompt();
+  eventoInstalacionDiferido.userChoice
+    .then((resultado) => {
+      console.log('[Instalación] Resultado:', resultado.outcome);
+    })
+    .catch(() => {
+      console.warn('[Instalación] No se pudo completar.');
+    })
+    .then(() => {
+      // Un evento de instalación solo se puede usar una vez
+      eventoInstalacionDiferido = null;
+      document.getElementById('tarjeta-instalar').hidden = true;
+    });
+}
+
+// -----------------------------
 // Inicialización
 // -----------------------------
 document.addEventListener('DOMContentLoaded', () => {
+  verificarEntornoIOS();
+  document.getElementById('btn-instalar').addEventListener('click', instalarApp);
+
   document.getElementById('btn-adjuntar-ubicacion').addEventListener('click', iniciarFlujoUbicacion);
 
   document.getElementById('btn-confirmar-ubicacion').addEventListener('click', () => {

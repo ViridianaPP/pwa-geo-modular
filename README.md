@@ -25,6 +25,10 @@ Desarrollado por Viridiana Portilla Palestina.
 3. Indicador de precisión: menos de 30 m → **Precisión GPS Alta**; 30 m o más → **Ubicación Aproximada (Wi-Fi / IP)**.
 4. **Lectura rápida (baja precisión)** reutiliza el mismo módulo con `enableHighAccuracy: false` para comparar.
 
+## Instalar
+- Android (Chrome): pulsa **Instalar app** dentro de la página (o menú ⋮ → Instalar aplicación).
+- iPhone (Safari): Compartir → **Agregar a inicio**. Safari no dispara `beforeinstallprompt`, por eso se muestra la guía en la página.
+
 ## Probar
 1. Abre la URL de GitHub Pages en la laptop y en el teléfono y compara el valor de precisión.
 2. En DevTools → Application verifica Manifest, Service Worker y que Cache Storage tenga `geo-helper.js`.
