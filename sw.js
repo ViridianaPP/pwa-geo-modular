@@ -1,7 +1,7 @@
 'use strict';
 
 // Subir la versión en cada cambio publicado para forzar la actualización
-const NOMBRE_CACHE = 'pwa-geo-modular-v2';
+const NOMBRE_CACHE = 'pwa-geo-modular-v3';
 
 // App Shell con rutas relativas (GitHub Pages publica en un subdirectorio).
 // geo-helper.js va incluido para que el módulo esté disponible sin red.
@@ -19,7 +19,11 @@ const ARCHIVOS_PRECACHEADOS = [
 self.addEventListener('install', (event) => {
   event.waitUntil(
     caches.open(NOMBRE_CACHE)
-      .then((cache) => cache.addAll(ARCHIVOS_PRECACHEADOS))
+      // cache: 'reload' salta la caché HTTP del navegador (GitHub Pages la guarda
+      // 10 min). Sin esto, el SW nuevo podría precachear archivos viejos.
+      .then((cache) => cache.addAll(
+        ARCHIVOS_PRECACHEADOS.map((url) => new Request(url, { cache: 'reload' }))
+      ))
       .then(() => self.skipWaiting())
   );
 });
