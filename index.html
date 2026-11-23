@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f172a">
+  <meta name="description" content="Reporte técnico con geolocalización consciente, pre-permiso y selección manual de zona.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="GeoPWA">
+  <title>Geolocalización Consciente PWA</title>
+  <link rel="manifest" href="./manifest.json">
+  <link rel="apple-touch-icon" href="./icons/icon-192.png">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <div class="contenedor">
+    <header class="cabecera">
+      <h1>Geolocalización Consciente</h1>
+      <p class="subtitulo">Reporte técnico con ubicación bajo demanda y plan B manual</p>
+    </header>
+
+    <main>
+      <form id="form-reporte" class="tarjeta" novalidate>
+        <h2>1. Datos del reporte</h2>
+        <label for="titulo">Título</label>
+        <input type="text" id="titulo" placeholder="Ej. Falla en válvula 4" required>
+        <label for="descripcion">Descripción</label>
+        <textarea id="descripcion" placeholder="Detalle técnico..." required></textarea>
+
+        <h2 class="separado">2. Ubicación</h2>
+        <p id="estado-geo" role="status" aria-live="polite">Aún no se ha adjuntado ninguna ubicación.</p>
+
+        <button id="btn-adjuntar-ubicacion" type="button">Adjuntar mi ubicación</button>
+
+        <!-- Pre-permiso: se muestra ANTES de que el navegador pregunte -->
+        <div id="aviso-ubicacion" class="aviso" hidden>
+          <h3>Antes de compartir tu ubicación</h3>
+          <p>Necesitamos tu ubicación aproximada para adjuntar las coordenadas al reporte técnico y calcular la sucursal más cercana.</p>
+          <p>Solo se lee una vez, cuando pulses el botón. No se rastrea tu movimiento.</p>
+          <div class="controles">
+            <button id="btn-confirmar-ubicacion" type="button">Compartir mi ubicación</button>
+            <button id="btn-rechazar-ubicacion" type="button" class="secundario">Prefiero elegir mi zona</button>
+          </div>
+        </div>
+
+        <!-- Resultado de la lectura -->
+        <div id="resultado-ubicacion" class="resultado" hidden>
+          <span id="etiqueta-precision" class="etiqueta"></span>
+          <dl>
+            <dt>Latitud</dt><dd id="dato-latitud"></dd>
+            <dt>Longitud</dt><dd id="dato-longitud"></dd>
+            <dt>Precisión</dt><dd id="dato-precision"></dd>
+            <dt>Lectura</dt><dd id="dato-hora"></dd>
+          </dl>
+        </div>
+
+        <!-- Plan B: selector manual de zona -->
+        <div id="selector-manual" class="plan-b" hidden>
+          <h3>Selecciona tu zona manualmente</h3>
+          <label for="zona-manual">Zona / ciudad</label>
+          <select id="zona-manual">
+            <option value="">-- Elige una zona --</option>
+            <option value="Cuernavaca">Cuernavaca</option>
+            <option value="Emiliano Zapata">Emiliano Zapata</option>
+            <option value="Jiutepec">Jiutepec</option>
+            <option value="Temixco">Temixco</option>
+            <option value="Cuautla">Cuautla</option>
+            <option value="Otra">Otra</option>
+          </select>
+          <div id="ayuda-reactivar" hidden>
+            <p><strong>¿Quieres volver a activar la ubicación?</strong></p>
+            <ul>
+              <li>Android (Chrome): toca el icono junto a la dirección → Permisos → Ubicación → Permitir.</li>
+              <li>iPhone (Safari): Ajustes → Safari → Ubicación. Si la app está instalada en inicio, sus permisos son independientes de Safari.</li>
+              <li>Escritorio: clic en el candado de la barra de direcciones → Ubicación → Permitir y recarga.</li>
+            </ul>
+          </div>
+        </div>
+
+        <button id="btn-enviar" type="submit" class="separado">Preparar reporte</button>
+      </form>
+
+      <section id="tarjeta-paquete" class="tarjeta" hidden>
+        <h2>Paquete listo para enviar</h2>
+        <p>Este objeto es el que se mandaría al servidor o se encolaría en IndexedDB.</p>
+        <pre id="paquete"></pre>
+      </section>
+
+      <section class="tarjeta">
+        <h2>Comparar precisión</h2>
+        <p>Reutiliza el mismo módulo con baja precisión (<code>enableHighAccuracy: false</code>) para una lectura rápida, como la que serviría para buscar sucursales cercanas.</p>
+        <button id="btn-lectura-rapida" type="button">Lectura rápida (baja precisión)</button>
+        <p id="resultado-rapido" role="status" aria-live="polite"></p>
+      </section>
+    </main>
+
+    <footer class="pie">Desarrollado por Viridiana Portilla Palestina</footer>
+  </div>
+
+  <!-- geo-helper.js ANTES de app.js: app.js usa sus funciones globales -->
+  <script src="./geo-helper.js"></script>
+  <script src="./app.js"></script>
+</body>
+</html>
